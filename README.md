@@ -1,112 +1,185 @@
-# soc-lab-wazuh
-A virtual SOC lab using Wazuh to simulate real-world cybersecurity monitoring and attack detection.
+# Wazuh SOC Detection Homelab
 
----
+A Wazuh-based SOC homelab for monitoring, threat detection, incident investigation, and automated response.
 
-## 📌 Overview
+## Features
 
-This self-contained Security Operations Center (SOC) lab was built to gain practical experience in:
+- Wazuh Manager, Indexer, and Dashboard
+- Windows and Linux endpoint monitoring
+- Custom detection rules
+- MITRE ATT&CK mapping
+- Incident investigation
+- File Integrity Monitoring (FIM)
+- Wazuh Active Response
 
-- Deploying a SIEM system using **Wazuh**
-- Monitoring logs from **Windows, Linux, firewall**, and **web applications**
-- Simulating real-world **cyberattacks** from Kali Linux
-- Investigating alerts and writing custom detection rules
+## Why I Built This
 
-All components are virtualized using VMware and configured on an isolated network.
+This project was built to gain hands-on experience with Wazuh by simulating attacks, writing detection rules, investigating alerts, and implementing automated response.
 
----
+## Lab Environment
 
-## 🧱 Lab Architecture
+| System | Role | IP Address |
+| ----------------- | --------------------------------- | --------------- |
+| Monitoring Server | Wazuh Manager, Indexer, Dashboard | 192.168.211.156 |
+| Ubuntu Server | Linux Endpoint | 192.168.211.157 |
+| Windows 10 Home | Windows Endpoint | 192.168.211.158 |
+| Kali Linux 2025.4 | Attack Machine | DHCP |
 
-| Component          | Role                              | OS/Tool      |
-|-------------------|------------------------------------|--------------|
-| Wazuh Server       | SIEM + log aggregation             | Ubuntu 22.04 |
-| Windows Endpoint   | Simulated client + agent logs      | Windows 10   |
-| Ubuntu DVWA Server | Vulnerable web server + agent      | Ubuntu 22.04 |
-| pfSense Firewall   | Log source (remote syslog)         | pfSense      |
-| Kali Linux         | Attack simulation                  | Kali Linux   |
+The Wazuh Manager monitors two endpoints:
 
-📊 See [architecture/lab-diagram.png](architecture/lab-diagram.png) for network layout.
+- ubuntu-server
+- windows-endpoint
 
----
+Kali Linux is used to simulate attacks.
 
-## ⚙️ Tools & Technologies
+## Architecture
 
-- **SIEM:** Wazuh
-- **Virtualization:** VMware Workstation
-- **Firewall:** pfSense
-- **Attacking Tools:** Nmap, sqlmap, Burp Suite, Hydra
-- **Web App:** DVWA (Damn Vulnerable Web Application)
-- **Log Forwarding:** Syslog
+The lab architecture consists of a Wazuh Manager and two monitored endpoints.
 
----
+![Wazuh Architecture](architecture/wazuh-architecture.png)
 
-## 🚀 Attack Scenarios
+![Network Topology](architecture/network-topology.png)
 
-| Scenario            | Description                           |
-|---------------------|---------------------------------------|
-| SQL Injection       | Attacking DVWA input fields           |
-| Brute Force Attack  | Login attempts using Hydra            |
-| Reverse Shell       | Gaining shell access via DVWA         |
+## Technologies Used
 
-See detailed guides in [`/attack-scenarios`](attack-scenarios/)
+- VMware Workstation Pro
+- Ubuntu Server 24.04 LTS
+- Windows 10 Home
+- Kali Linux 2025.4
+- Wazuh
+- Sysmon
+- rsyslog
+- OpenSSH
+- MITRE ATT&CK Framework
 
----
+## Attack Scenarios
 
-## 🔍 Alerts & Detection
+| # | Attack | MITRE ATT&CK |
+| - | ---------------------------- | ---------------- |
+| 1 | SSH Brute Force | T1110 |
+| 2 | Windows Reconnaissance | T1082, T1016 |
+| 3 | Registry Run Key Persistence | T1547.001 |
+| 4 | File Integrity Monitoring | T1222, T1485 |
 
-Wazuh alerts were triggered by simulated attacks and include:
+## Detection Rules
 
-- Failed login attempts
-- SQL injection attempts
-- Unauthorized shell access
+Custom Wazuh rules used throughout the lab.
 
-Custom rules were also written. See [`logs-and-alerts/custom-rules.md`](logs-and-alerts/custom-rules.md)
+- [Rule Explanations](rules/rule-explanations.md)
+- [Custom Rules](rules/custom-rules.xml)
+- [Decoders](rules/decoders.xml)
 
----
+## Investigation Reports
 
-## 📸 Screenshots
+Each attack includes a corresponding investigation report.
 
-- Wazuh Dashboard  
-- Alert Logs  
-- DVWA Interface  
-See [`logs-and-alerts/screenshots/`](logs-and-alerts/screenshots/)
+- [SSH Brute Force Investigation](investigations/01-ssh-bruteforce.md)
+- [Windows Reconnaissance Investigation](investigations/02-windows-reconnaissance.md)
+- [Registry Persistence Investigation](investigations/03-registry-persistence.md)
+- [File Integrity Monitoring Investigation](investigations/04-file-integrity-monitoring.md)
 
----
+## Active Response
 
-## 📘 Setup Guides
+SSH brute-force attacks are automatically mitigated using Wazuh Active Response.
 
-Reproducible setup instructions are in the [`/setup-guides`](setup-guides/) folder:
+- [SSH IP Blocking with Wazuh Active Response](active-response/ssh-ip-blocking.md)
 
-- Wazuh Server
-- Windows Endpoint
-- Ubuntu + DVWA
-- pfSense Firewall
-- Kali Linux Attacker
+## Screenshots
 
----
+### Wazuh Dashboard
 
-## 🧠 Lessons Learned
+![Wazuh Dashboard](screenshots/wazuh-dashboard.png)
 
-- Importance of centralized log management
-- Writing detection rules based on observed attack patterns
-- Basic SOC workflows (collect, analyze, alert)
+### SSH Brute Force Detection
 
-See [`conclusions/lessons-learned.md`](conclusions/lessons-learned.md)
+![SSH Brute Force Detection](screenshots/ssh-bruteforce-alerts.png)
 
----
+### Windows Reconnaissance Detection
 
-## ✅ Skills Gained
+![Reconnaissance Detection](screenshots/windows-reconnaissance-alerts.png)
 
-- SOC analysis
-- SIEM (Wazuh)
-- Log analysis & correlation
-- Basic pentesting
-- Syslog forwarding
-- Windows & Linux system monitoring
+### Connected Agents
 
----
+![Connected Agents](screenshots/agents-connected.png)
 
-## 📄 License
 
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for more info.
+## Repository Structure
+
+```text
+wazuh-soc-detection-homelab/
+├── README.md
+│
+├── architecture/
+│   ├── network-topology.png
+│   └── wazuh-architecture.png
+│
+├── setup/
+│   ├── monitoring-server.md
+│   ├── ubuntu-server.md
+│   ├── windows-endpoint.md
+│   ├── kali-linux.md
+│   ├── wazuh-installation.md
+│   └── agent-deployment.md
+│
+├── attack-scenarios/
+│   ├── 01-ssh-bruteforce.md
+│   ├── 02-windows-reconnaissance.md
+│   ├── 03-registry-persistence.md
+│   └── 04-file-integrity-monitoring.md
+│
+├── investigations/
+│   ├── 01-ssh-bruteforce.md
+│   ├── 02-windows-reconnaissance.md
+│   ├── 03-registry-persistence.md
+│   └── 04-file-integrity-monitoring.md
+│
+├── active-response/
+│   └── ssh-ip-blocking.md
+│
+├── rules/
+│   ├── custom-rules.xml
+│   ├── decoders.xml
+│   └── rule-explanations.md
+│
+├── screenshots/
+│   ├── agents-connected.png
+│   ├── file-integrity-monitoring-alerts.png
+│   ├── hydra-attack-blocked.png
+│   ├── registry-persistence-alerts.png
+│   ├── ssh-bruteforce-alerts.png
+│   ├── ssh-bruteforce-hydra.png
+│   ├── wazuh-active-response-alert.png
+│   ├── wazuh-dashboard.png
+│   ├── wazuh-login.png
+│   ├── wazuh-services.png
+│   └── windows-reconnaissance-alerts.png
+│
+└── notes/
+    ├── lessons-learned.md
+    └── recommendations.md
+```
+
+## Setup Documentation
+
+- [Monitoring Server Setup](setup/monitoring-server.md)
+- [Wazuh Installation](setup/wazuh-installation.md)
+- [Ubuntu Server Setup](setup/ubuntu-server.md)
+- [Windows Endpoint Setup](setup/windows-endpoint.md)
+- [Kali Linux Setup](setup/kali-linux.md)
+- [Agent Deployment](setup/agent-deployment.md)
+
+## Setup Order
+
+1. Monitoring Server Setup
+2. Wazuh Installation
+3. Ubuntu Server Setup
+4. Windows Endpoint Setup
+5. Kali Linux Setup
+6. Agent Deployment
+7. Attack Scenarios
+8. Investigations
+9. Active Response Configuration
+
+## Author
+
+**Princewill Nkemateh**
